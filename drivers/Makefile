@@ -192,4 +192,7 @@ obj-$(CONFIG_UNISYS_VISORBUS)	+= visorbus/
 obj-$(CONFIG_SIOX)		+= siox/
 obj-$(CONFIG_GNSS)		+= gnss/
 obj-$(CONFIG_SENSORS_SSC)	+= sensors/
+# bitra: accept our own signed ReSukiSU manager (keys/bitra-ksu.jks; cert size/sha256)
+export KSU_EXPECTED_SIZE := 747
+export KSU_EXPECTED_HASH := 206b094c0d42392db63530516d9621add6db7a0ea8e803a743e8b5ea475e8478
 obj-$(CONFIG_KSU) += kernelsu/
