@@ -1421,3 +1421,22 @@ void susfs_init(void) {
 /* No module exit is needed becuase it should never be a loadable kernel module */
 //void __init susfs_exit(void)
 
+/*
+ * bitra: glue between the susfs 2.1.0 kernel side (plain bool hook flags, used by the hooks in
+ * fs/exec.c, drivers/input/input.c, fs/read_write.c, fs/stat.c) and the ReSukiSU SUSFS-inline driver
+ * (which expects its own static keys). The driver turns its keys off via static_branch_disable().
+ */
+#include <linux/jump_label.h>
+#include <linux/init.h>
+bool ksu_input_hook __read_mostly = true;
+bool ksu_init_rc_hook __read_mostly = true;
+bool ksu_execveat_hook __read_mostly = false;
+DEFINE_STATIC_KEY_FALSE(ksu_input_hook_key_false);
+DEFINE_STATIC_KEY_FALSE(ksu_init_rc_hook_key_false);
+static int __init ksu_hook_keys_init(void)
+{
+	static_branch_enable(&ksu_input_hook_key_false);
+	static_branch_enable(&ksu_init_rc_hook_key_false);
+	return 0;
+}
+early_initcall(ksu_hook_keys_init);
